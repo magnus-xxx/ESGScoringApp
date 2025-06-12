@@ -26,6 +26,9 @@ const MAPPING = {
   'bus.fill': 'directions-bus',     // Icon cho giao dịch xe bus
   'gift.fill': 'card-giftcard',     // Icon cho tab Ưu đãi
   'leaf.fill': 'eco',               // <-- THÊM DÒNG NÀY cho tab Carbon
+  'arrow.clockwise': 'refresh', // <-- THÊM DÒNG NÀY
+  'arrow.up.right.circle.fill': 'open-in-new',
+  'magnifyingglass': 'search', // Icon cho thanh tìm kiếm
 } as IconMapping;
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
