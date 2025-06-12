@@ -1,4 +1,3 @@
-// app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
@@ -15,7 +14,11 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        // SỬA ĐỔI Ở ĐÂY:
+        // Thay vì thay đổi màu theo theme, chúng ta sẽ cố định màu active
+        // để đảm bảo nó luôn hiển thị tốt trên nền sáng của thanh tab.
+        tabBarActiveTintColor: Colors.light.tint, 
+
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
@@ -26,26 +29,28 @@ export default function TabLayout() {
           default: {},
         }),
       }}>
-      {/* Sửa lại tên screen từ 'index' thành 'dashboard' để làm màn hình chính */}
+      {/* Tab 1: Dashboard */}
       <Tabs.Screen
-        name="dashboard" // <-- Đổi thành 'dashboard'
+        name="dashboard"
         options={{
-          title: 'Dashboard', // <-- Đổi title
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.pie.fill" color={color} />, // Icon mới
+          title: 'Trang chủ',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+      {/* Tab 2: Carbon Footprint */}
       <Tabs.Screen
-        name="explore"
+        name="carbon"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Carbon',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="leaf.fill" color={color} />,
         }}
       />
-      {/* Ẩn màn hình index cũ đi vì chúng ta không dùng nữa */}
+      {/* Tab 3: Rewards (Ưu đãi) */}
       <Tabs.Screen
-        name="index"
+        name="rewards"
         options={{
-          href: null, // Thêm dòng này để ẩn tab
+          title: 'Ưu đãi',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gift.fill" color={color} />,
         }}
       />
     </Tabs>

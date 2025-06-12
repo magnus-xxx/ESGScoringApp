@@ -19,8 +19,14 @@ const MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'chart.pie.fill': 'pie-chart',
+  'archivebox.fill': 'archive',      // Icon cho header
+  'bell.fill': 'notifications',     // Icon cho header
+  'banknote.fill': 'payment',       // Icon cho giao dịch
+  'creditcard.fill': 'credit-card', // Icon cho giao dịch
+  'bus.fill': 'directions-bus',     // Icon cho giao dịch xe bus
+  'gift.fill': 'card-giftcard',     // Icon cho tab Ưu đãi
+  'leaf.fill': 'eco',               // <-- THÊM DÒNG NÀY cho tab Carbon
 } as IconMapping;
-
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
  * This ensures a consistent look across platforms, and optimal resource usage.
