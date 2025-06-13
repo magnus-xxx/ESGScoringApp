@@ -29,6 +29,8 @@ const MAPPING = {
   'arrow.clockwise': 'refresh', // <-- THÊM DÒNG NÀY
   'arrow.up.right.circle.fill': 'open-in-new',
   'magnifyingglass': 'search', // Icon cho thanh tìm kiếm
+  'chart.bar.fill': 'bar-chart', // Icon cho biểu đồ
+  'globe.americas.fill': 'public', // Icon cho tab Bù đắp
 } as IconMapping;
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.

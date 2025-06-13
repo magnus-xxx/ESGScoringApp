@@ -53,7 +53,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="gift.fill" color={color} />,
         }}
       />
-      <Tabs.Screen name="compensation" options={{ href: null }} /> 
+      <Tabs.Screen 
+    name="compensation" 
+    options={{
+      title: 'Bù đắp',
+      tabBarIcon: ({ color }) => <IconSymbol name="globe.americas.fill" size={28} color={color} />, // Chọn icon phù hợp
+    }}
+    />
     </Tabs>
   );
 }

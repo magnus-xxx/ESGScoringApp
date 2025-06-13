@@ -1,1 +1,5 @@
 API gateway link: https://opsbwq42zc.execute-api.ap-southeast-1.amazonaws.com/v1/transactions
+Đoạn thêm curency dashboard:
+<!-- <ThemedText style={tx.Amount > 0 ? styles.transactionAmountPositive : styles.transactionAmountNegative}>
+    {tx.Amount > 0 ? `${tx.Amount.toFixed(2)}` : `-${Math.abs(tx.Amount).toFixed(2)}`}
+</ThemedText> -->

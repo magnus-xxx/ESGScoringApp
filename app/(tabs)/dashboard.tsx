@@ -13,6 +13,26 @@ import {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     SafeAreaView,
     ScrollView,
     StatusBar,
@@ -102,7 +122,7 @@ const DashboardScreen = () => {
                         </View>
                         <View style={styles.statBox}>
                             <ThemedText style={styles.statLabel}>Tổng Chi Tiêu</ThemedText>
-                            <ThemedText style={styles.statValue}>${scores.TotalExpenses.toFixed(2)}</ThemedText>
+                            <ThemedText style={styles.statValue}>{scores.TotalExpenses.toFixed(2)}</ThemedText>
                         </View>
                     </View>
                     <View style={styles.actionsRow}>
@@ -143,7 +163,7 @@ const DashboardScreen = () => {
                 <View style={styles.transactionAmountContainer}>
                     <ThemedText style={styles.transactionCategory}>{tx.Category}</ThemedText>
                     <ThemedText style={tx.Amount > 0 ? styles.transactionAmountPositive : styles.transactionAmountNegative}>
-                        {tx.Amount > 0 ? `\$${tx.Amount.toFixed(2)}` : `-\$${Math.abs(tx.Amount).toFixed(2)}`}
+                        {tx.Amount > 0 ? `${tx.Amount.toFixed(2)}` : `-${Math.abs(tx.Amount).toFixed(2)}`}
                     </ThemedText>
                 </View>
             </View>
