@@ -25,11 +25,10 @@
   + AWS Lambda (Python 3.9+)
   + Amazon DynamoDB
   + Amazon API Gateway
-**Yêu cầu Môi trường** Trước khi bắt đầu, hãy đảm bảo bạn đã cài đặt:
+**Yêu cầu Môi trường**
+Trước khi bắt đầu, hãy đảm bảo bạn đã cài đặt:
 - Node.js (phiên bản 18+)
 - Expo CLI: npm install -g expo-cli
 - Python (phiên bản 3.9+)
 - Tài khoản AWS
 - AWS CLI đã được cấu hình với quyền truy cập vào Lambda, DynamoDB, API Gateway.
-
-
