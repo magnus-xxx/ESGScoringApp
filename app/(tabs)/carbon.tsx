@@ -194,7 +194,7 @@ const CarbonScreen = () => {
                             </View>
                             <View style={styles.transactionDetails}>
                                 <Text style={styles.txCo2}>{tx.CO2_Estimate.toFixed(2)} kg</Text>
-                                <Text style={styles.txAmount}>{Math.abs(tx.Amount).toLocaleString()} đ</Text>
+                                <Text style={styles.txESG}>+{Math.abs(tx.E_Score_Per_Transaction).toLocaleString()} ESG</Text>
                             </View>
                         </TouchableOpacity>
                     ))}
@@ -247,6 +247,11 @@ const styles = StyleSheet.create({
     modalDetailValue: { color: DARK_TEXT, fontSize: 16, fontWeight: '500', flex: 1, textAlign: 'right' },
     closeButton: { backgroundColor: PRIMARY_COLOR, padding: 15, borderRadius: 25, marginTop: 30 },
     closeButtonText: { color: WHITE_BACKGROUND, textAlign: 'center', fontWeight: 'bold', fontSize: 16 },
+    txESG: { 
+        color: PRIMARY_COLOR, // <-- Đổi thành màu xanh lá cây
+        fontWeight: 'bold', 
+        fontSize: 14, 
+    },
 });
 
 export default CarbonScreen;

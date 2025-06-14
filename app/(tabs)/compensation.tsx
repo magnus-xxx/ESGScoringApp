@@ -1,9 +1,13 @@
+// THÊM MỚI: Imports cho state, effect, và API
+import { fetchDashboardData } from '@/api/esg';
 import { ThemedText } from '@/components/ThemedText';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+// THÊM MỚI: ActivityIndicator để báo đang tải
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+// --- Các hằng số màu sắc (Không đổi) ---
 // --- Các hằng số màu sắc ---
 const PRIMARY_COLOR = '#00D09E';
 const DARK_TEXT = '#0C0D0F';
@@ -16,10 +20,9 @@ const TAG_INVEST_TEXT = '#36A2EB';
 const TAG_COMMUNITY_BG = 'rgba(255, 159, 64, 0.1)';
 const TAG_COMMUNITY_TEXT = '#FF9F40';
 
-
 // --- Dữ liệu giả lập cho các dự án ---
 const compensationData = {
-    totalCo2Offset: 15.7, // kg
+    // SỬA ĐỔI: Xóa dòng totalCo2Offset cố định, vì chúng ta sẽ lấy từ API
     projects: [
         { 
             id: '1',
@@ -44,6 +47,27 @@ const compensationData = {
 // --- Component chính ---
 const CompensationScreen = () => {
     const router = useRouter();
+    
+    // THÊM MỚI: State để lưu dữ liệu động từ API và trạng thái loading
+    const [totalCO2, setTotalCO2] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    // THÊM MỚI: useEffect để gọi API khi màn hình được tải
+    useEffect(() => {
+        fetchDashboardData('user0054e0') // Sử dụng ID người dùng hiện tại
+            .then(data => {
+                if (data && data.scores) {
+                    setTotalCO2(data.scores.TotalCO2);
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi khi lấy dữ liệu CO2:", error);
+                setTotalCO2(0); 
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []); // Mảng rỗng đảm bảo useEffect chỉ chạy 1 lần
 
     return (
         <SafeAreaView style={styles.wrapper}>
@@ -57,29 +81,38 @@ const CompensationScreen = () => {
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-                {/* === KHỐI TÓM TẮT THÀNH TỰU === */}
+                {/* === SỬA ĐỔI KHỐI TÓM TẮT THÀNH TỰU === */}
                 <View style={styles.summaryCard}>
                     <IconSymbol name="leaf.fill" size={40} color={PRIMARY_COLOR} />
-                    <ThemedText style={styles.summaryTitle}>Tổng tác động của bạn</ThemedText>
-                    <ThemedText style={styles.summaryValue}>{compensationData.totalCo2Offset} Kg CO₂</ThemedText>
-                    <ThemedText style={styles.summaryLabel}>đã được bù đắp</ThemedText>
+                    <ThemedText style={styles.summaryTitle}>Dấu chân Carbon của bạn</ThemedText>
+                    
+                    {/* Thêm logic hiển thị loading hoặc giá trị từ API */}
+                    {loading ? (
+                        <ActivityIndicator size="large" color={PRIMARY_COLOR} style={{ height: 48, marginVertical: 4 }} />
+                    ) : (
+                        <View style={styles.summaryValueContainer}>
+    <ThemedText style={styles.summaryValue}>
+        {(totalCO2 ?? 0).toFixed(1)}
+    </ThemedText>
+    <ThemedText style={styles.summaryUnit}>
+        Kg CO₂
+    </ThemedText>
+</View>
+                    )}
+
+                    <ThemedText style={styles.summaryLabel}>cần được bù đắp</ThemedText>
                 </View>
                 
-                {/* === KHỐI DANH SÁCH DỰ ÁN === */}
+                {/* === KHỐI DANH SÁCH DỰ ÁN (Không đổi) === */}
                 <View style={styles.section}>
                     <ThemedText style={styles.sectionTitle}>Các dự án bạn có thể tham gia</ThemedText>
                     {compensationData.projects.map(project => (
+                        // ... code render project card giữ nguyên như cũ
                         <View key={project.id} style={styles.projectCard}>
                             <Image source={project.image} style={styles.projectImage} />
                             <View style={styles.projectInfo}>
-                                <View style={[
-                                    styles.tag,
-                                    { backgroundColor: project.type === 'Đầu tư xanh' ? TAG_INVEST_BG : TAG_COMMUNITY_BG }
-                                ]}>
-                                    <ThemedText style={[
-                                        styles.tagText,
-                                        { color: project.type === 'Đầu tư xanh' ? TAG_INVEST_TEXT : TAG_COMMUNITY_TEXT }
-                                    ]}>{project.type}</ThemedText>
+                                <View style={[styles.tag, { backgroundColor: project.type === 'Đầu tư xanh' ? TAG_INVEST_BG : TAG_COMMUNITY_BG }]}>
+                                    <ThemedText style={[styles.tagText, { color: project.type === 'Đầu tư xanh' ? TAG_INVEST_TEXT : TAG_COMMUNITY_TEXT }]}>{project.type}</ThemedText>
                                 </View>
                                 <ThemedText style={styles.projectTitle}>{project.title}</ThemedText>
                                 <ThemedText style={styles.projectDescription}>{project.description}</ThemedText>
@@ -90,7 +123,6 @@ const CompensationScreen = () => {
                         </View>
                     ))}
                 </View>
-
             </ScrollView>
         </SafeAreaView>
     );
@@ -125,7 +157,17 @@ const styles = StyleSheet.create({
         color: LIGHT_TEXT, 
         fontSize: 14 
     },
-    
+    summaryValueContainer: {
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        justifyContent: 'center',
+    },
+    summaryUnit: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: DARK_TEXT, // Đảm bảo hằng số DARK_TEXT đã được khai báo ở đầu file
+        marginLeft: 8,
+    },
     section: { 
         paddingHorizontal: 20, 
         marginBottom: 20 
