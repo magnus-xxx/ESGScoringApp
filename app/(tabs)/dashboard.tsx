@@ -58,7 +58,7 @@ const DashboardScreen = () => {
 
     const loadData = async () => {
         setLoading(true);
-        const fetchedData = await fetchDashboardData('userdb81c4');
+        const fetchedData = await fetchDashboardData('user0054e0');
         setData(fetchedData);
         setLoading(false);
     };
