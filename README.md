@@ -25,6 +25,7 @@
   + AWS Lambda (Python 3.9+)
   + Amazon DynamoDB
   + Amazon API Gateway
+    
 **Yêu cầu Môi trường**
 Trước khi bắt đầu, hãy đảm bảo bạn đã cài đặt:
 - Node.js (phiên bản 18+)
