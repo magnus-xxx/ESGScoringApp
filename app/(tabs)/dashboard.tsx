@@ -1,8 +1,8 @@
-import { fetchDashboardData, type DashboardData, type Transaction } from '@/api/esg';
+import { fetchDashboardData, type DashboardData } from '@/api/esg';
 import { ThemedText } from '@/components/ThemedText';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     ImageBackground, // THÊM IMPORT BỊ THIẾU  
@@ -50,6 +50,14 @@ const formatDate = (isoString: string) => {
     }
 };
 
+// MỚI: Định nghĩa kiểu dữ liệu cho danh sách đã được nhóm lại
+interface CategorySummary {
+  categoryName: string;
+  totalAmount: number;
+  totalEScore: number;
+  transactionCount: number;
+}
+
 // --- Component chính ---
 const DashboardScreen = () => {
     const router = useRouter();
@@ -64,7 +72,41 @@ const DashboardScreen = () => {
     };
 
     useEffect(() => { loadData(); }, []);
-    
+
+   //------------------------------------------------ 
+    // TỐI ƯU: Sử dụng useMemo để nhóm và tính toán dữ liệu giao dịch
+    // Logic này chỉ chạy lại khi `data.transactions_detail` thay đổi, không chạy mỗi khi re-render
+    const categorySummary: CategorySummary[] = useMemo(() => {
+        if (!data?.transactions_detail) {
+            return [];
+        }
+
+        // Dùng reduce để nhóm các giao dịch theo Category
+        const groupedData = data.transactions_detail.reduce((acc, tx) => {
+            const category = tx.Category || 'Khác';
+            
+            if (!acc[category]) {
+                acc[category] = { totalAmount: 0, totalEScore: 0, transactionCount: 0 };
+            }
+            
+            // Chỉ tính tổng cho các khoản chi tiêu (số âm)
+            acc[category].totalAmount += tx.Amount;
+            
+
+            acc[category].totalEScore += tx.E_Score_Per_Transaction || 0;
+            acc[category].transactionCount += 1;
+            
+            return acc;
+        }, {} as Record<string, Omit<CategorySummary, 'categoryName'>>);
+
+        // Chuyển object đã nhóm thành một mảng để dễ dàng render
+        return Object.entries(groupedData).map(([categoryName, details]) => ({
+            categoryName,
+            ...details
+        }));
+
+    }, [data?.transactions_detail]);
+//------------------------------------------------
 
     if (loading) {
         return <SafeAreaView style={[styles.wrapper, styles.centered]}><ActivityIndicator size="large" color={PRIMARY_COLOR} /></SafeAreaView>;
@@ -139,27 +181,31 @@ const DashboardScreen = () => {
                     </TouchableOpacity>
                     
                     <View style={styles.transactionsContainer}>
-    {/* Lấy trực tiếp transactions_detail từ data */}
-    {data.transactions_detail && data.transactions_detail.length > 0 ? (
-        data.transactions_detail.slice(0, 5).map((tx: Transaction) => (
-            <View key={tx.TransactionID} style={styles.transactionRow}>
-                <View style={styles.transactionIconContainer}><IconSymbol name={tx.Amount > 0 ? 'banknote.fill' : 'creditcard.fill'} size={20} color="#000" /></View>
-                <View style={styles.transactionInfo}>
-                    <ThemedText style={styles.transactionType}>{tx.MerchantName}</ThemedText>
-                    <ThemedText style={styles.transactionDate}>{formatDate(tx.Timestamp)}</ThemedText>
-                </View>
-                <View style={styles.transactionAmountContainer}>
-                    <ThemedText style={styles.transactionCategory}>{tx.Category}</ThemedText>
-                    <ThemedText style={(tx.Amount || 0) > 0 ? styles.transactionAmountPositive : styles.transactionAmountNegative}>
-    {formatNumberWithCommas(tx.Amount)}
-</ThemedText>
-                </View>
-            </View>
-        ))
-    ) : (
-        <ThemedText style={styles.noTransactionText}>Không có giao dịch nào trong tháng.</ThemedText>
-    )}
-</View>
+                        <ThemedText style={styles.sectionTitle}>Chi tiêu theo hạng mục</ThemedText>
+                        {categorySummary.length > 0 ? (
+                            categorySummary.map((summary) => (
+                                <View key={summary.categoryName} style={styles.categoryRow}>
+                                    <View style={styles.categoryIconContainer}>
+                                        <IconSymbol name="creditcard.fill" size={20} color={PRIMARY_COLOR} />
+                                    </View>
+                                    <View style={styles.categoryInfo}>
+                                        <ThemedText style={styles.categoryName}>{summary.categoryName}</ThemedText>
+                                        <ThemedText style={styles.transactionCount}>{summary.transactionCount} giao dịch</ThemedText>
+                                    </View>
+                                    <View style={styles.categoryTotals}>
+                                        <ThemedText style={styles.categoryAmount}>
+                                            {formatNumberWithCommas(summary.totalAmount)}
+                                        </ThemedText>
+                                        <ThemedText style={styles.categoryEScore}>
+                                            +{summary.totalEScore} ESG
+                                        </ThemedText>
+                                    </View>
+                                </View>
+                            ))
+                        ) : (
+                            <ThemedText style={styles.noTransactionText}>Không có dữ liệu chi tiêu.</ThemedText>
+                        )}
+                    </View>
                       
                         <View style={styles.faqContainer}>
                         <TouchableOpacity style={styles.faqRow}>
@@ -263,6 +309,59 @@ const styles = StyleSheet.create({
     faqContainer: { marginTop: 20, gap: 10 },
     faqRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F7F7F7', padding: 15, borderRadius: 10 },
     faqText: { flex: 1, color: DARK_TEXT, fontSize: 16, marginLeft: 10 },
+    // DÁN TOÀN BỘ KHỐI NÀY VÀO STYLESHEET CỦA BẠN
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: DARK_TEXT,
+        marginBottom: 15,
+        paddingHorizontal: 20,
+    },
+    categoryRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#F7F7F7',
+        padding: 12,
+        borderRadius: 10,
+        marginHorizontal: 20,
+        marginBottom: 10,
+    },
+    categoryIconContainer: {
+        width: 40,
+        height: 40,
+        borderRadius: 10,
+        backgroundColor: 'rgba(0, 208, 158, 0.1)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
+    },
+    categoryInfo: {
+        flex: 1,
+        gap: 4,
+    },
+    categoryName: {
+        color: DARK_TEXT,
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    transactionCount: { // Style cho "x giao dịch"
+        color: '#666',
+        fontSize: 12,
+    },
+    categoryTotals: {
+        alignItems: 'flex-end',
+        gap: 4,
+    },
+    categoryAmount: {
+        color: '#E76F51',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    categoryEScore: {
+        color: PRIMARY_COLOR,
+        fontWeight: 'bold',
+        fontSize: 12,
+    },
 });
 
 export default DashboardScreen;
