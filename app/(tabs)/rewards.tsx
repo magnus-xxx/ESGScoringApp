@@ -29,7 +29,7 @@ const RewardsScreen = () => {
     useEffect(() => {
         const loadData = async () => {
             setLoading(true);
-            const fetchedData = await fetchDashboardData('user123');
+            const fetchedData = await fetchDashboardData('userdb81c4');
             setData(fetchedData);
             setLoading(false);
         };

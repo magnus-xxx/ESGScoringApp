@@ -5,34 +5,7 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
-    ImageBackground // THÊM IMPORT BỊ THIẾU
-    ,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ImageBackground, // THÊM IMPORT BỊ THIẾU  
     SafeAreaView,
     ScrollView,
     StatusBar,
@@ -48,6 +21,19 @@ const DARK_BACKGROUND = '#0C0D0F';
 const WHITE_BACKGROUND = '#FFFFFF';
 const LIGHT_TEXT = '#A9A9A9';
 const DARK_TEXT = '#0C0D0F';
+
+/// --- Hàm tiện ích ---
+const formatNumberWithCommas = (value: number | null | undefined) => {
+  // Nếu giá trị không phải là số, trả về '0'
+  if (typeof value !== 'number') {
+    return '0';
+  }
+  // 1. Làm tròn số về số nguyên gần nhất
+  const roundedValue = Math.round(value);
+
+  // 2. Định dạng số đã làm tròn mà không có phần thập phân
+  return new Intl.NumberFormat('vi-VN').format(roundedValue);
+};
 
 // --- Hàm tiện ích ---
 const formatDate = (isoString: string) => {
@@ -72,7 +58,7 @@ const DashboardScreen = () => {
 
     const loadData = async () => {
         setLoading(true);
-        const fetchedData = await fetchDashboardData('user123');
+        const fetchedData = await fetchDashboardData('userdb81c4');
         setData(fetchedData);
         setLoading(false);
     };
@@ -118,12 +104,14 @@ const DashboardScreen = () => {
                     <View style={styles.statsRow}>
                         <View style={styles.statBox}>
                             <ThemedText style={styles.statLabel}>Lượng CO₂ Hiện Tại</ThemedText>
-                            <ThemedText style={styles.statValue}>{scores.TotalCO2.toFixed(2)} Kg</ThemedText>
-                        </View>
+                            <ThemedText style={styles.statValue}>{(scores.TotalCO2 || 0).toFixed(2)} Kg</ThemedText>
+</View>
                         <View style={styles.statBox}>
                             <ThemedText style={styles.statLabel}>Tổng Chi Tiêu</ThemedText>
-                            <ThemedText style={styles.statValue}>{scores.TotalExpenses.toFixed(2)}</ThemedText>
-                        </View>
+                            <ThemedText style={styles.statValue}>
+    {formatNumberWithCommas(scores.TotalExpenses)}
+</ThemedText>
+</View>
                     </View>
                     <View style={styles.actionsRow}>
                         <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/compensation')}>
@@ -162,9 +150,9 @@ const DashboardScreen = () => {
                 </View>
                 <View style={styles.transactionAmountContainer}>
                     <ThemedText style={styles.transactionCategory}>{tx.Category}</ThemedText>
-                    <ThemedText style={tx.Amount > 0 ? styles.transactionAmountPositive : styles.transactionAmountNegative}>
-                        {tx.Amount > 0 ? `${tx.Amount.toFixed(2)}` : `-${Math.abs(tx.Amount).toFixed(2)}`}
-                    </ThemedText>
+                    <ThemedText style={(tx.Amount || 0) > 0 ? styles.transactionAmountPositive : styles.transactionAmountNegative}>
+    {formatNumberWithCommas(tx.Amount)}
+</ThemedText>
                 </View>
             </View>
         ))
