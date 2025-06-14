@@ -11,10 +11,25 @@
   
 **Hình ảnh Ứng dụng**
 ![Screenshot_20250614_193307_Expo Go](https://github.com/user-attachments/assets/68c0ada5-edd2-4c7a-8bcd-4a4ff701136f)
-![Screenshot_20250614_193316_Expo Go](https://github.com/user-attachments/assets/7d659c2b-6edb-463c-a496-2d9de12ee198)
 ![Screenshot_20250614_193325_Expo Go](https://github.com/user-attachments/assets/a2d246a2-1229-4740-a993-610f23642bcd)
 ![Screenshot_20250614_193332_Expo Go](https://github.com/user-attachments/assets/1b5e7cf8-fb06-4869-ba11-ea89a65281ee)
-![Screenshot_20250614_193335_Expo Go](https://github.com/user-attachments/assets/3886063f-a725-42b4-925a-e4c8978352b7)
-![Screenshot_20250614_193340_Expo Go](https://github.com/user-attachments/assets/cd45284c-b0f7-4cd0-b431-e84ce3c33de5)
+
+
+**Công nghệ sử dụng**
+- Frontend:
+  + React Native (với Expo)
+  + TypeScript
+  + Expo Router (để điều hướng)
+  + react-native-chart-kit (để vẽ biểu đồ)
+- Backend:
+  + AWS Lambda (Python 3.9+)
+  + Amazon DynamoDB
+  + Amazon API Gateway
+**Yêu cầu Môi trường** Trước khi bắt đầu, hãy đảm bảo bạn đã cài đặt:
+- Node.js (phiên bản 18+)
+- Expo CLI: npm install -g expo-cli
+- Python (phiên bản 3.9+)
+- Tài khoản AWS
+- AWS CLI đã được cấu hình với quyền truy cập vào Lambda, DynamoDB, API Gateway.
 
 
